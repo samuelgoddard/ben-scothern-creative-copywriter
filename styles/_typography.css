@@ -78,3 +78,20 @@ h1 > span {
     }
   }
 }
+
+.blend-image {
+  @apply bg-offwhite opacity-10;
+  mix-blend-mode: luminosity;
+
+  img, picture {
+    mix-blend-mode: luminosity;
+  }
+}
+
+.blend-image-inner > picture {
+  @apply absolute top-0 left-0 right-0 bottom-0 w-full h-full object-cover object-top !important;
+}
+
+.blend-image-inner > picture > img {
+  @apply absolute top-0 left-0 right-0 bottom-0 w-full h-full object-cover object-top !important;
+}

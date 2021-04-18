@@ -1,25 +1,23 @@
 import Head from 'next/head'
+import { request } from "../lib/datocms";
+import { renderMetaTags, Image } from "react-datocms";
+import { metaTagsFragment, responsiveImageFragment } from "../lib/fragments";
+
 import Layout from '../components/layout'
 import Header from '../components/header'
 import Footer from '../components/footer'
 import Container from '../components/container'
 import FancyLink from '../components/fancyLink'
+
 import { fade } from "../helpers/transitions"
 import { motion } from 'framer-motion'
 
-export default function Home() {
+export default function Home({ data: { site, home, work } }) {
+  const metaTags = home.seo.concat(site.favicon);
+  
   return (
     <Layout>
-      <Head>
-          <link rel="icon" href="/favicon.ico" />
-          <title>Nextjs boilerplate - Home</title>
-          <meta
-          name="description"
-          content="nextJS boilerplate"
-          />
-          <meta name="og:title" content="Website Title" />
-          <meta name="twitter:card" content="summary_large_image" />
-      </Head>
+      <Head>{renderMetaTags(metaTags)}</Head>
 
       <Header />
 
@@ -32,14 +30,11 @@ export default function Home() {
         <motion.div variants={fade}>
           <Container>
             <section className="mb-10 md:mb-16 xl:mb-24">
-              <div className="flex flex-wrap relative md:py-12 xl:py-20">
+              <div className="flex flex-wrap relative md:py-16 xl:py-24">
                 <div className="w-full md:w-7/12 relative z-10 order-2 md:order-1 -mt-20 md:mt-0">
                   <h1 className="text-5xl md:text-[58px] lg:text-[62px] xl:text-[75px] 2xl:text-[80px] mb-5 md:mb-8 xl:mb-12 leading-extra-tight">Ben Scothern is a <span>creative copywriter</span> from Nottingham</h1>
                   <div className="content max-w-2xl">
-                    <div className="mb-5 md:mb-8">
-                      <p className="text-[20px] xl:text-[24px]">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate.</p>
-
-                      <p className="text-[17px] xl:text-[19px]">Velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    <div className="mb-5 md:mb-8 content content--fancy" dangerouslySetInnerHTML={{ __html: home.heroText }}>
                     </div>
 
                     <div className="flex items-center text-lg xl:text-xl">
@@ -56,7 +51,17 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="w-full md:w-8/12 md:absolute top-0 right-0 bottom-0 z-0 order-1 md:order-2">
-                  <img src="https://placedog.net/800/800" className="w-full h-full object-cover object-center opacity-25" alt="Ben" />
+                  {/* <img src="https://placedog.net/800/800" className="w-full h-full object-cover object-center opacity-25" alt="Ben" /> */}
+
+                  <div className="blend-image h-full overflow-hidden md:absolute inset-0">
+                    <Image
+                      data={{
+                        ...home.heroImage.responsiveImage,
+                        alt: home.heroImage.alt ? home.heroImage.alt : home.heroImage.title,
+                      }}
+                      className="w-full h-full blend-image-inner md:absolute inset-0"
+                    />
+                  </div>
                 </div>
               </div>
             </section>
@@ -86,4 +91,44 @@ export default function Home() {
       </motion.div>
     </Layout>
   )
+}
+
+const HOME_QUERY = `
+  query HomePage {
+    site: _site {
+      favicon: faviconMetaTags {
+        ...metaTagsFragment
+      }
+    }
+    home {
+      seo: _seoMetaTags {
+        ...metaTagsFragment
+      }
+      title
+      heroHeading
+      heroText
+      heroImage {
+        responsiveImage(
+          imgixParams: {fm: jpg, fit: crop, w: 1600, h: 1400, auto: format, q: 100 }) {
+          ...responsiveImageFragment
+          }
+        title
+        alt
+      }
+    }
+  }
+  ${metaTagsFragment}
+  ${responsiveImageFragment}
+`
+
+export async function getStaticProps() {
+  const data = await request({
+    query: HOME_QUERY
+  })
+
+  return {
+    props: {
+      data,
+    },
+  }
 }
