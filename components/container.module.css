@@ -1,0 +1,8 @@
+.container {
+  @apply px-6 max-w-screen-2xl mx-auto w-full md:px-8;
+}
+
+.container--wide {
+  max-width: 1700px;
+  @apply px-0
+}
