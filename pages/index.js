@@ -1,4 +1,5 @@
 import Head from 'next/head'
+
 import { request } from "../lib/datocms";
 import { renderMetaTags, Image } from "react-datocms";
 import { metaTagsFragment, responsiveImageFragment } from "../lib/fragments";
@@ -12,14 +13,21 @@ import FancyLink from '../components/fancyLink'
 import { fade } from "../helpers/transitions"
 import { motion } from 'framer-motion'
 
-export default function Home({ data: { site, home, work } }) {
+export default function Home({ data: { site, home, work, contact } }) {
   const metaTags = home.seo.concat(site.favicon);
+
+  const truncate = (str, max = 10) => {
+    const array = str.trim().split(' ');
+    const ellipsis = array.length > max ? '...' : '';
+  
+    return array.slice(0, max).join(' ') + ellipsis;
+  };
   
   return (
     <Layout>
       <Head>{renderMetaTags(metaTags)}</Head>
 
-      <Header />
+      <Header email={contact.emailAddress} />
 
       <motion.div
         initial="initial"
@@ -30,22 +38,22 @@ export default function Home({ data: { site, home, work } }) {
         <motion.div variants={fade}>
           <Container>
             <section className="mb-10 md:mb-16 xl:mb-24">
-              <div className="flex flex-wrap relative md:py-16 xl:py-24">
+              <div className="flex flex-wrap relative md:py-[6vh]">
                 <div className="w-full md:w-7/12 relative z-10 order-2 md:order-1 -mt-20 md:mt-0">
-                  <h1 className="text-5xl md:text-[58px] lg:text-[62px] xl:text-[75px] 2xl:text-[80px] mb-5 md:mb-8 xl:mb-12 leading-extra-tight">Ben Scothern is a <span>creative copywriter</span> from Nottingham</h1>
+                  <h1 className="text-5xl md:text-[50px] lg:text-[55px] xl:text-[72px] 2xl:text-[78px] mb-5 md:mb-8 xl:mb-12 leading-extra-tight md:max-w-xl xl:max-w-3xl">Ben Scothern is a <span>creative copywriter</span> from Nottingham</h1>
                   <div className="content max-w-2xl">
-                    <div className="mb-5 md:mb-8 content content--fancy" dangerouslySetInnerHTML={{ __html: home.heroText }}>
+                    <div className="mb-6 md:mb-10 content content--fancy" dangerouslySetInnerHTML={{ __html: home.heroText }}>
                     </div>
 
                     <div className="flex items-center text-lg xl:text-xl">
-                      <div className="mr-5 md:mr-8 xl:mr-12">
-                        <a href="#work" className={`text-purple inline-block hover:text-purpledark focus:text-purpledark transition duration-200 ease-in-out transform-gpu hover:translate-x-2 focus:translate-x-2 focus:outline-none focus:ring focus:ring-purple focus:ring-opacity-10 focus:ring-offset-4 focus:ring-offset-offwhite`}>
-                          Read My Work ⟶
+                      <div className="mr-6 md:mr-8 xl:mr-12">
+                        <a href="#work" className={`text-purple inline-block hover:text-purpledark focus:text-purpledark transition duration-200 ease-in-out group focus:outline-none focus:ring focus:ring-purple focus:ring-opacity-10 focus:ring-offset-4 focus:ring-offset-offwhite`}>
+                          Read My Work <span className="inline-block transition duration-300 ease-in-out transform-gpu group-hover:translate-x-2">⟶</span>
                         </a>
                       </div>
 
-                        <a href="mailto:ben@ben.com" className={`text-purple inline-block hover:text-purpledark focus:text-purpledark transition duration-200 ease-in-out transform-gpu hover:translate-x-2 focus:translate-x-2 focus:outline-none focus:ring focus:ring-purple focus:ring-opacity-10 focus:ring-offset-4 focus:ring-offset-offwhite`}>
-                          Get In Touch ⟶
+                        <a href={`mailto:${contact.emailAddress}`} aria-label={`Send email to ${contact.emailAddress}`} className={`text-purple inline-block hover:text-purpledark focus:text-purpledark transition duration-200 ease-in-out group focus:outline-none focus:ring focus:ring-purple focus:ring-opacity-10 focus:ring-offset-4 focus:ring-offset-offwhite`}>
+                          Get In Touch <span className="inline-block transition duration-300 ease-in-out transform-gpu group-hover:translate-x-2">⟶</span>
                         </a>
                     </div>
                   </div>
@@ -70,14 +78,15 @@ export default function Home({ data: { site, home, work } }) {
 
             <section className="mb-5 md:mb-8 xl:mb-12 overflow-hidden" id="work">
               <div className="flex flex-wrap md:-mx-8">
-                {Array.from(Array(6), (e, i) => {
+              {
+                work.map((article, i) => {
                   return (
                     <div className="w-full md:w-1/2 lg:w-1/3 md:px-8 mb-10 md:mb-16 xl:mb-20 2xl:mb-24" key={i}>
-                      <h2 className="text-4xl md:text-[40px] lg:text-[44px] xl:text-[50px] 2xl:text-[54px] mb-4 md:mb-6 xl:mb-8 leading-extra-tight">Project Name Goes Here.</h2>
-                      <p className="text-[17px] xl:text-[19px] mb-3 md:mb-5 xl:mb-7 w-10/12 xl:w-11/12 block">Brief project description explaining what work was done lorem ipsum dolor.</p>
+                      <h2 className="text-4xl md:text-[40px] lg:text-[44px] xl:text-[46px] 2xl:text-[52px] mb-4 md:mb-4 xl:mb-6 leading-extra-tight">{article.title}</h2>
+                      <p className="text-[17px] xl:text-[19px] mb-3 md:mb-5 xl:mb-7 w-10/12 xl:w-11/12 block">{truncate(article.heroText, 17)}</p>
                       
                       <div className="text-lg md:text-xl">
-                        <FancyLink destination="/work" a11yText="Navigate to the about page" label="Let's Go" />
+                        <FancyLink destination={`/${article.slug}`} a11yText={`Navigate to the ${article.title} article`} label="Let's Go" />
                       </div>
                     </div>
                   )
@@ -86,7 +95,7 @@ export default function Home({ data: { site, home, work } }) {
             </section>
           </Container>
 
-          <Footer />
+          <Footer socials={contact.socials} />
         </motion.div>
       </motion.div>
     </Layout>
@@ -100,12 +109,23 @@ const HOME_QUERY = `
         ...metaTagsFragment
       }
     }
+    contact: contact {
+      emailAddress
+      socials {
+        name
+        url
+      }
+    }
+    work: allWorks {
+      slug
+      title
+      heroText
+    }
     home {
       seo: _seoMetaTags {
         ...metaTagsFragment
       }
       title
-      heroHeading
       heroText
       heroImage {
         responsiveImage(

@@ -52,6 +52,10 @@ h1 > span {
   @apply mb-4
 }
 
+.content strong {
+  @apply font-bold;
+}
+
 .content--fancy p {
   @apply mb-4;
 
@@ -60,8 +64,24 @@ h1 > span {
   }
 }
 
+.content--fancy ul {
+  @apply list-inside list-disc;
+
+  li {
+    @apply mb-1;
+  }
+}
+
+.content--fancy ol {
+  @apply list-inside list-decimal;
+
+  li {
+    @apply mb-1;
+  }
+}
+
 .content p > a {
-  @apply text-purple underline;
+  @apply text-purple underline focus:outline-none focus:ring focus:ring-purple focus:ring-opacity-10 focus:ring-offset-4 focus:ring-offset-offwhite hover:text-opacity-50 focus:text-opacity-50;
 }
 
 
@@ -76,6 +96,14 @@ h1 > span {
     &:first-of-type {
       @apply text-xl;
     }
+  }
+
+  .content--fancy ul, ol {
+    @apply text-lg mb-6;
+  }
+  
+  .content--fancy ol {
+    @apply text-lg mb-6;
   }
 }
 
