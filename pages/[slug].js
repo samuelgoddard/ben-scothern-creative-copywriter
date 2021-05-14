@@ -44,7 +44,7 @@ export default function Work({ data: { site, work, nextArticle, contact } }) {
                   <Container>
                     <h1 className="text-6xl md:text-[64px] lg:text-[72px] xl:text-[90px] 2xl:text-[100px] mb-3 md:mb-5 xl:mb-6 leading-extra-tight w-full md:w-10/12">{ work.title }</h1>
                     <div className="content max-w-2xl mb-6 md:mb-10 xl:mb-12">
-                      <p className="text-[17px] xl:text-[19px] text-purple">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer a velit id elit placerat bibendum. Aliquam dapibus elit sed urna.</p>
+                      <p className="text-[17px] xl:text-[19px] text-purple">{work.heroText}</p>
                     </div>
 
                     <div className="flex flex-wrap md:-mx-3 w-full max-w-2xl">

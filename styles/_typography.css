@@ -80,6 +80,19 @@ h1 > span {
   }
 }
 
+
+@screen md {
+  .content--fancy-lists {
+    ul {
+      @apply flex flex-wrap mb-2;
+    }
+  
+    ul li {
+      @apply w-1/2;
+    }
+  }
+}
+
 .content p > a {
   @apply text-purple underline focus:outline-none focus:ring focus:ring-purple focus:ring-opacity-10 focus:ring-offset-4 focus:ring-offset-offwhite hover:text-opacity-50 focus:text-opacity-50;
 }

@@ -42,7 +42,7 @@ export default function Home({ data: { site, home, work, contact } }) {
                 <div className="w-full md:w-7/12 relative z-10 order-2 md:order-1 -mt-20 md:mt-0">
                   <h1 className="text-5xl md:text-[50px] lg:text-[55px] xl:text-[72px] 2xl:text-[78px] mb-5 md:mb-8 xl:mb-12 leading-extra-tight md:max-w-xl xl:max-w-3xl">Ben Scothern is a <span>creative copywriter</span> from Nottingham</h1>
                   <div className="content max-w-2xl">
-                    <div className="mb-6 md:mb-10 content content--fancy" dangerouslySetInnerHTML={{ __html: home.heroText }}>
+                    <div className="mb-6 md:mb-10 content content--fancy content--fancy-lists" dangerouslySetInnerHTML={{ __html: home.heroText }}>
                     </div>
 
                     <div className="flex items-center text-lg xl:text-xl">
